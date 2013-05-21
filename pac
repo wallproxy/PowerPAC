@@ -2,8 +2,10 @@
 listen_port = 0
 def config():
     import sys
-    ini = sys.argv[2]
-    files = sys.argv[3:]
+    ini = 'proxy.ini'
+    files = sys.argv[2:]
+    if files and files[0].endswith('.ini'):
+        ini = files[0]; files = files[1:]
     if files:
         from make_config import Common
         from os.path import dirname, join
@@ -20,6 +22,7 @@ def config():
             pass
         httpd.server_address = ini.LISTEN_IP or '0.0.0.0', ini.LISTEN_PORT
         set_hosts = import_from('util')
+        set_hosts(ini.GOOGLE_SITES, ini.GOOGLE_HOSTS)
         for k,v in ini.HOSTS.iteritems():
             if k and v: set_hosts(k, v)
         PacFile = import_from('pac')
